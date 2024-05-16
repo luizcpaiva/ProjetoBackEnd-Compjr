@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  # database:
+  #   container_name: trainee_database
+  #   image: postgres:latest
+  #   ports: 5432:5432
+  crowler:
+    container_name: pokemon_crowler
+    image: node
+    volumes:
+      - ./crowler:/project
+    # depends_on:
+    #   - database
+    entrypoint: node /project/index.js
+  
