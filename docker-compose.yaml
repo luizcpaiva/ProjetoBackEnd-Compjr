@@ -12,5 +12,7 @@ services:
       - ./crowler:/project
     # depends_on:
     #   - database
-    entrypoint: node /project/index.js
+    # entrypoint: npm run prod
+    working_dir: /project
+    entrypoint: npm run prod
   
