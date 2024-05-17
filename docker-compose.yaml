@@ -1,18 +1,22 @@
 version: "3.8"
 
 services:
-  # database:
-  #   container_name: trainee_database
-  #   image: postgres:latest
-  #   ports: 5432:5432
+  database:
+    container_name: trainee_database
+    image: postgres:latest
+    ports: 
+      - 5432:5432
+    env_file: ./.env
+    volumes:
+      - ./local/pgdata:/var/lib/postgresql/data
+
   crowler:
     container_name: pokemon_crowler
     image: node
     volumes:
       - ./crowler:/project
-    # depends_on:
-    #   - database
-    # entrypoint: npm run prod
+    depends_on:
+      - database
     working_dir: /project
     entrypoint: npm run prod
   

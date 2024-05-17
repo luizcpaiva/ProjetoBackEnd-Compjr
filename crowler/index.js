@@ -1,9 +1,7 @@
 const axios = require('axios');
 
-const offset = 0;
-const limit = 20;
-
 const baseUrl = 'https://pokeapi.co/api/v2/pokemon';
+const limit = 20; 
 
 async function PokemonList(offset, limit) {
     const url = `${baseUrl}?offset=${offset}&limit=${limit}`;
@@ -22,20 +20,29 @@ async function PokemonDetails(url) {
     };
 }
 
-async function getPokemonInfo() {
-    try {
-        const pokemonList = await PokemonList(offset, limit);
+async function getAllPokemonInfo() {
+    let offset = 0;
+    let hasNextPage = true;
 
-        for (const pokemon of pokemonList) {
-            const details = await PokemonDetails(pokemon.url);
-            console.log(`ID: ${details.id}`);
-            console.log(`Name: ${details.name}`);
-            console.log(`Type(s): ${details.types.join(', ')}`);
+    while (hasNextPage) {
+        try {
+            const pokemonList = await PokemonList(offset, limit);
+            if (pokemonList.length > 0) {
+                for (const pokemon of pokemonList) {
+                    const details = await PokemonDetails(pokemon.url);
+                    console.log(`ID: ${details.id}`);
+                    console.log(`Nome: ${details.name}`);
+                    console.log(`Tipo(s): ${details.types.join(', ')}`);
+                }
+                offset += limit; // Atualiza o offset para a próxima página
+            } else {
+                hasNextPage = false; // Nenhum Pokémon restante para buscar
+            }
+        } catch (error) {
+            console.error('Erro ao buscar dados dos Pokémon:', error);
+            hasNextPage = false; // Para o loop em caso de erro
         }
-    } catch (error) {
-        console.error('Error fetching Pokémon data:', error);
     }
 }
 
-getPokemonInfo();
-
+getAllPokemonInfo();
