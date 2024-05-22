@@ -1,11 +1,8 @@
---1 schema
--- criar tabelas
---relacionamentos
---desenhar modelo de banco de dados
+CREATE SCHEMA IF NOT EXISTS pokemon_schema [ AUTHORIZATION role_specification ]
 
---time - 6 pokemons
---shiny, sexo, altura, peso, ivs, evs, 4 moves, apelido
--- 1 pokemon e 1 definição de pokemon(vem da api, já ta no banco)
-
-
-
+CREATE TABLE IF NOT EXISTS pokemon_schema.definicaoPokemon (
+    ID SERIAL PRIMARY KEY,
+    Nome VARCHAR(255) NOT NULL,
+    Tipo1 VARCHAR(255) NOT NULL,
+    Tipo2 VARCHAR(255) 
+);
