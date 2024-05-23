@@ -7,6 +7,7 @@ router.get('/', async (req, res) => {
         const times = await Time.findAll();
         res.json(times);
     } catch (error) {
+        console.log(error.message)
         res.status(500).json({ error: 'Erro ao buscar os times.' });
     }
 });
@@ -16,6 +17,7 @@ router.post('/', async (req, res) => {
         const newTime = await Time.create(req.body);
         res.status(201).json(newTime);
     } catch (error) {
+        console.log(error.message)
         res.status(500).json({ error: 'Erro ao criar o time.' });
     }
 });
@@ -29,6 +31,7 @@ router.get('/:id', async (req, res) => {
             res.status(404).json({ error: 'Time não encontrado.' });
         }
     } catch (error) {
+        console.log(error.message)
         res.status(500).json({ error: 'Erro ao buscar o time.' });
     }
 });
@@ -47,6 +50,7 @@ router.get('/:id/pokemon', async (req, res) => {
             res.status(404).json({ error: 'Time não encontrado.' });
         }
     } catch (error) {
+        console.log(error.message)
         res.status(500).json({ error: 'Erro ao buscar os Pokémons do time.' });
     }
 });
@@ -61,6 +65,7 @@ router.patch('/:id', async (req, res) => {
             res.status(404).json({ error: 'Time não encontrado.' });
         }
     } catch (error) {
+        console.log(error.message)
         res.status(500).json({ error: 'Erro ao atualizar o time.' });
     }
 });
@@ -75,6 +80,7 @@ router.delete('/:id', async (req, res) => {
             res.status(404).json({ error: 'Time não encontrado.' });
         }
     } catch (error) {
+        console.log(error.message)
         res.status(500).json({ error: 'Erro ao excluir o time.' });
     }
 });
