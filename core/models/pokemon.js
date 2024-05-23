@@ -9,14 +9,6 @@ const Pokemon = sequelize.define('Pokemon', {
         primaryKey: true,
         autoIncrement: true
     },
-    Pokemon: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        references: {
-            model: DefinicaoPokemon,
-            key: 'id'
-        }
-    },
     sexo: DataTypes.STRING,
     shiny: DataTypes.BOOLEAN,
     altura: DataTypes.FLOAT,
@@ -28,6 +20,13 @@ const Pokemon = sequelize.define('Pokemon', {
         type: DataTypes.INTEGER,
         references: {
             model: Moves,
+            key: 'id'
+        }
+    },
+    definicaoID: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: DefinicaoPokemon,
             key: 'id'
         }
     }

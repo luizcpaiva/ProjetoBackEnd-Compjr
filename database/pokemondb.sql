@@ -24,9 +24,10 @@ CREATE TABLE IF NOT EXISTS pokemon_schema.Pokemon (
     EVs SMALLINT,
     Apelido VARCHAR(255),
     Nível SMALLINT,
-    FOREIGN KEY (Pokemon) REFERENCES pokemon_schema.definicaoPokemon(ID),
-    FOREIGN KEY (MovesID) REFERENCES pokemon_schema.Moves(ID)
+    movesID INTEGER REFERENCES pokemon_schema.Moves(ID),
+    definicaoID INTEGER REFERENCES pokemon_schema.definicaoPokemon(ID) ON DELETE SET NULL ON UPDATE CASCADE
 );
+
 
 CREATE TABLE IF NOT EXISTS pokemon_schema.Time (
     ID SERIAL PRIMARY KEY,

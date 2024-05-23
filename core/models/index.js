@@ -1,8 +1,9 @@
 const sequelize = require('../config/database');
 const Moves = require('./moves');
 const Pokemon = require('./pokemon');
-const Time = require('./time');
+const Time = require('./times');
 const DefinicaoPokemon = require('./definicaoPokemon'); 
+
 
 DefinicaoPokemon.hasMany(Pokemon, { foreignKey: 'definicaoID' });
 Pokemon.belongsTo(DefinicaoPokemon, { foreignKey: 'definicaoID' });
