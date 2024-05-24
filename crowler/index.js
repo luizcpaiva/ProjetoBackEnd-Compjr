@@ -11,28 +11,28 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
     }
 });
 
-const Pokemon = sequelize.define('Pokemon', {
+const DefinicaoPokemon = sequelize.define('DefinicaoPokemon', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    name: {
+    nome: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    type1: {
+    tipo1: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    type2: {
+    tipo2: {
         type: DataTypes.STRING,
         allowNull: true
     }
 }, {
     schema: 'pokemon_schema',
-    tableName: 'definicaoPokemon', 
-    timestamps: false 
+    tableName: 'definicaoPokemon',
+    timestamps: false
 });
 
 // Sincroniza o modelo com o banco de dados
@@ -79,11 +79,11 @@ async function getAllPokemonInfo() {
                     const details = await PokemonDetails(pokemon.url);
 
                     // Upsert -> se existe -> atualiza se não -> cria
-                    await Pokemon.upsert({
+                    await DefinicaoPokemon.upsert({
                         id: details.id,
-                        name: details.name,
-                        type1: details.types[0] ?? null,
-                        type2: details.types[1] ?? null
+                        nome: details.name,
+                        tipo1: details.types[0] ?? null,
+                        tipo2: details.types[1] ?? null
                     }).catch(console.log);
                 }
                 offset += limit; // Atualiza o offset para a próxima página

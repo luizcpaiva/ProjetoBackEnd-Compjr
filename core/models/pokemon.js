@@ -16,24 +16,13 @@ const Pokemon = sequelize.define('Pokemon', {
     evs: DataTypes.SMALLINT,
     apelido: DataTypes.STRING,
     nivel: DataTypes.SMALLINT,
-    movesID: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Moves,
-            key: 'id'
-        }
-    },
-    definicaoID: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: DefinicaoPokemon,
-            key: 'id'
-        }
-    }
 }, {
     schema: 'pokemon_schema',
     tableName: 'pokemon',
     timestamps: false
 });
+
+Pokemon.DefinicaoPokemon = Pokemon.belongsTo(DefinicaoPokemon);
+Pokemon.Moves = Pokemon.hasOne(Moves);
 
 module.exports = Pokemon;

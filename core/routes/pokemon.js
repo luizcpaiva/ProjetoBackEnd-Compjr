@@ -5,7 +5,7 @@ const { Pokemon, DefinicaoPokemon, Moves } = require('../models');
 // Rota para buscar todos os Pokémons
 router.get('/', async (req, res) => {
     try {
-        const pokemons = await Pokemon.findAll();
+        const pokemons = await Pokemon.findAll({include: DefinicaoPokemon});
         res.json(pokemons);
     } catch (error) {
         console.log(error.message)
@@ -14,13 +14,35 @@ router.get('/', async (req, res) => {
 });
 
 // Rota para criar um novo Pokémon
+
+/**
+
+{
+    "apelido?": ...
+    "nivel?": ...
+    "shiny?": ...
+    "sexo?": ...
+    "altura?": ...
+    "pokemon": ...
+}
+
+ */
+
 router.post('/', async (req, res) => {
     try {
-        const { apelido, sexo, definicao, nivel, iv, ev } = req.body
+        const {
+            pokemon,
+            ...pokemonData
+        } = req.body
 
-        const pokemon_defition = DefinicaoPokemon.get
-
-        const newPokemon = await Pokemon.create(req.body);
+        const pokemon_defition = await DefinicaoPokemon.findOne({ where: { nome: pokemon } })
+        if (!pokemon_defition) {
+            res.status(404).json({ error: `Erro ao criar pokemon. ${pokemon} não é um pokemon válido`})
+            return 
+        }
+        const newPokemonData = {DefinicaoPokemonId: pokemon_defition.id, ...pokemonData }
+        console.log(newPokemonData)
+        const newPokemon = await Pokemon.create(newPokemonData, {association: Pokemon.DefinicaoPokemon, include: [Pokemon.DefinicaoPokemon]});
         res.status(201).json(newPokemon);
     } catch (error) {
         console.log(error.message)
