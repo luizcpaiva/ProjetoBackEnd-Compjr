@@ -4,14 +4,6 @@ const Pokemon = require('./pokemon');
 const Time = require('./times');
 const DefinicaoPokemon = require('./definicaoPokemon'); 
 
-
-Time.belongsTo(Pokemon, { as: 'pokemon1Details', foreignKey: 'pokemon1' });
-Time.belongsTo(Pokemon, { as: 'pokemon2Details', foreignKey: 'pokemon2' });
-Time.belongsTo(Pokemon, { as: 'pokemon3Details', foreignKey: 'pokemon3' });
-Time.belongsTo(Pokemon, { as: 'pokemon4Details', foreignKey: 'pokemon4' });
-Time.belongsTo(Pokemon, { as: 'pokemon5Details', foreignKey: 'pokemon5' });
-Time.belongsTo(Pokemon, { as: 'pokemon6Details', foreignKey: 'pokemon6' });
-
 module.exports = {
     sequelize,
     Moves,
