@@ -4,8 +4,9 @@ const { Time, Pokemon } = require('../models');
 
 router.get('/', async (req, res) => {
     try {
-        const times = await Time.findAll();
-        res.json(times);
+        const times = await Time.findAll({include: ["Pokemon1", "Pokemon2", "Pokemon3", "Pokemon4", "Pokemon5", "Pokemon6"]});
+
+        res.json(times);       
     } catch (error) {
         console.log(error.message)
         res.status(500).json({ error: 'Erro ao buscar os times.' });
@@ -14,52 +15,40 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { nomeDoTime, pokemon1, pokemon2, pokemon3, pokemon4, pokemon5, pokemon6 } = req.body;
+        const {
+            nomeDoTime,
+            pokemonList
+        } = req.body;
 
-        const pokemonIds = [pokemon1, pokemon2, pokemon3, pokemon4, pokemon5, pokemon6].filter(id => id !== undefined && id !== null);
+        console.log(pokemonList)
 
-        const pokemons = await Pokemon.findAll({ 
-            where: { id: pokemonIds },
-            include: [Pokemon.DefinicaoPokemon, Pokemon.Moves]
-        });
-
-        if (pokemons.length !== pokemonIds.length) {
-            res.status(404).json({ error: 'Um ou mais Pokémon fornecidos não foram encontrados.' });
-            return;
+        if (pokemonList === undefined || pokemonList.length == 0) {
+            return res.status(400).json({error: "Deve fornecer pelo menos um pokemon para o time"})
+        }
+        if (pokemonList.length > 6) {
+            return res.status(400).json({error: "Um time não pode conter mais que seis pokemon"})
         }
 
+        const pokemons = await Promise.all(
+            pokemonList.map(id => Pokemon.findOne({ where: { id }}))
+        );
 
-        const newTime = await Time.create({ nomeDoTime });
-
-  
-        const associations = [
-            { method: 'setPokemon1', pokemon: pokemon1 },
-            { method: 'setPokemon2', pokemon: pokemon2 },
-            { method: 'setPokemon3', pokemon: pokemon3 },
-            { method: 'setPokemon4', pokemon: pokemon4 },
-            { method: 'setPokemon5', pokemon: pokemon5 },
-            { method: 'setPokemon6', pokemon: pokemon6 }
-        ];
-
-        for (const association of associations) {
-            if (association.pokemon) {
-                const pokemon = pokemons.find(p => p.id === association.pokemon);
-                await newTime[association.method](pokemon);
-            }
+        if (pokemons.some(pokemon => !pokemon)) {
+            return res.status(404).json({ error: 'Um ou mais pokémons não foram encontrados.' });
         }
 
-        const createdTime = await Time.findByPk(newTime.id, {
-            include: [
-                { model: Pokemon, as: 'Pokemon1', include: [Pokemon.DefinicaoPokemon] },
-                { model: Pokemon, as: 'Pokemon2', include: [Pokemon.DefinicaoPokemon] },
-                { model: Pokemon, as: 'Pokemon3', include: [Pokemon.DefinicaoPokemon] },
-                { model: Pokemon, as: 'Pokemon4', include: [Pokemon.DefinicaoPokemon] },
-                { model: Pokemon, as: 'Pokemon5', include: [Pokemon.DefinicaoPokemon] },
-                { model: Pokemon, as: 'Pokemon6', include: [Pokemon.DefinicaoPokemon] }
-            ]
-        });
+        const newTimeData = {
+            nomeDoTime,
+            Pokemon1Id: pokemons[0]?.id,
+            Pokemon2Id: pokemons[1]?.id,
+            Pokemon3Id: pokemons[2]?.id,
+            Pokemon4Id: pokemons[3]?.id,
+            Pokemon5Id: pokemons[4]?.id,
+            Pokemon6Id: pokemons[5]?.id
+        };
 
-        res.status(201).json(createdTime);
+        const newTime = await Time.create(newTimeData);
+        res.status(201).json(newTime);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: 'Erro ao criar o time.' });

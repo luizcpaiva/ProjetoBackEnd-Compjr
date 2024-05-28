@@ -1,8 +1,8 @@
-const sequelize = require('../config/database');
 const Moves = require('./moves');
 const Pokemon = require('./pokemon');
 const Time = require('./times');
-const DefinicaoPokemon = require('./definicaoPokemon'); 
+const DefinicaoPokemon = require('./definicaoPokemon');
+const sequelize = require("../config/database")
 
 module.exports = {
     sequelize,

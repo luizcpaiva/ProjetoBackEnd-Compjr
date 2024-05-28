@@ -13,25 +13,11 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Rota para criar um novo Pokémon
-
-/**
-
-{
-    "apelido?": ...
-    "nivel?": ...
-    "shiny?": ...
-    "sexo?": ...
-    "altura?": ...
-    "pokemon": ...
-}
-
- */
-
 router.post('/', async (req, res) => {
     try {
         const {
             pokemon,
+            moves,
             ...pokemonData
         } = req.body
 
@@ -41,7 +27,6 @@ router.post('/', async (req, res) => {
             return 
         }
         const newPokemonData = {DefinicaoPokemonId: pokemon_defition.id, ...pokemonData }
-        console.log(newPokemonData)
         const newPokemon = await Pokemon.create(newPokemonData, {association: Pokemon.DefinicaoPokemon, include: [Pokemon.DefinicaoPokemon]});
         res.status(201).json(newPokemon);
     } catch (error) {
