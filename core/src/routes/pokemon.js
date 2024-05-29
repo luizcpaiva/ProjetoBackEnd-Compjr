@@ -53,6 +53,7 @@ router.get('/:id', async (req, res) => {
 // Rota para atualizar um Pokémon por ID
 router.patch('/:id', async (req, res) => {
     try {
+        
         const pokemon = await Pokemon.findByPk(req.params.id);
         if (pokemon) {
             await pokemon.update(req.body);
