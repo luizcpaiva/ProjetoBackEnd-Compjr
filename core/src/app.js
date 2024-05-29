@@ -1,5 +1,6 @@
 const express = require('express');
 const { sequelize } = require('./models');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 app.use(express.json());
@@ -9,6 +10,7 @@ const timeRoutes = require('./routes/times');
 
 app.use('/api/pokemon', pokemonRoutes);
 app.use('/api/times', timeRoutes);
+app.use('/api/auth', authRoutes);
 
 const PORT = process.env.PORT || 3000;
 

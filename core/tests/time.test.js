@@ -1,7 +1,7 @@
 const request = require('supertest');
 const express = require('express');
-const { sequelize, Pokemon, Time } = require('../models');
-const timeRoutes = require('../routes/times');
+const { sequelize, Pokemon, Time } = require('../src/models');
+const timeRoutes = require('../src/routes/times');
 
 const app = express();
 app.use(express.json());
@@ -11,8 +11,8 @@ beforeAll(async () => {
     await sequelize.sync({ force: true }); // Sincroniza o banco de dados para cada teste
     // Cria alguns Pokémons para serem usados nos testes
     await Pokemon.bulkCreate([
-        { sexo: 'M', shiny: false, altura: 1.0, ivs: 31, evs: 100, apelido: 'Charizard', nivel: 36, definicaoID: 1, movesID: 1 },
-        { sexo: 'F', shiny: true, altura: 0.8, ivs: 25, evs: 85, apelido: 'Blastoise', nivel: 32, definicaoID: 2, movesID: 2 }
+        { sexo: 'M', shiny: false, altura: 1.0, ivs: 31, evs: 100, apelido: 'Charizard', nivel: 36, definicaoID: 1 },
+        { sexo: 'F', shiny: true, altura: 0.8, ivs: 25, evs: 85, apelido: 'Blastoise', nivel: 32, definicaoID: 2 }
     ]);
 });
 

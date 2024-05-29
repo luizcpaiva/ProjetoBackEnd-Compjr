@@ -1,14 +1,16 @@
+// tests/pokemon.test.js
+
 const request = require('supertest');
 const express = require('express');
-const { sequelize, Pokemon, DefinicaoPokemon, Moves } = require('../models');
-const pokemonRoutes = require('../routes/pokemon');
+const { sequelize, Pokemon, DefinicaoPokemon, Moves } = require('../src/models');
+const pokemonRoutes = require('../src/routes/pokemon');
 
 const app = express();
 app.use(express.json());
 app.use('/api/pokemon', pokemonRoutes);
 
 beforeAll(async () => {
-    await sequelize.sync({ force: true }); // Sincroniza o banco de dados para cada teste
+    await sequelize.sync({ force: true });
     await DefinicaoPokemon.create({ nome: 'Pikachu', tipo1: 'Electric' });
     await Moves.create({ move1: 'Thunderbolt' });
 });
@@ -26,11 +28,10 @@ describe('Pokemon API', () => {
                 sexo: 'M',
                 shiny: false,
                 altura: 0.4,
-                ivs: 31,
-                evs: 100,
+                ivs: [31, 31, 31, 31, 31, 31],
+                evs: [85, 85, 85, 85, 85, 85],
                 apelido: 'Sparky',
-                nivel: 5,
-                movesID: 1
+                nivel: 5
             });
         expect(response.statusCode).toBe(201);
         expect(response.body).toHaveProperty('id');
