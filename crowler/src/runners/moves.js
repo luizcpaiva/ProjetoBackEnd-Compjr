@@ -31,7 +31,6 @@ async function getAllMovesInfo(baseUrl, limit) {
             if (moveList.length > 0) {
                 for (const move of moveList) {
                     const details = await MovesDetails(move.url);
-                    console.log(details)
                     // Upsert -> se existe -> atualiza se não -> cria
                     await Moves.upsert(details).catch(console.log);
                 }
