@@ -1,12 +1,12 @@
 const express = require('express');
 const { sequelize } = require('./models');
-const authRoutes = require('./routes/auth');
 
 const app = express();
 app.use(express.json());
 
 const pokemonRoutes = require('./routes/pokemon');
 const timeRoutes = require('./routes/times');
+const authRoutes = require('./routes/auth');
 
 app.use('/api/pokemon', pokemonRoutes);
 app.use('/api/times', timeRoutes);

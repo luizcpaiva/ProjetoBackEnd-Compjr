@@ -33,7 +33,7 @@ const User = sequelize.define('User', {
         allowNull: true
     }
 }, {
-    schema: 'auth_schema',
+    schema: 'pokemon_schema',
     tableName: 'users',
     timestamps: true
 });

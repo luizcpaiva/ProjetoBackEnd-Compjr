@@ -7,10 +7,26 @@ const Moves = sequelize.define('Moves', {
         primaryKey: true,
         autoIncrement: true
     },
-    move1: DataTypes.STRING,
-    move2: DataTypes.STRING,
-    move3: DataTypes.STRING,
-    move4: DataTypes.STRING
+    nome: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    precisao: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    pp: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    prioridade: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    poder: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    }
 }, {
     schema: 'pokemon_schema',
     tableName: 'moves',

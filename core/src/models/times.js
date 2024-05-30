@@ -22,5 +22,6 @@ Time.Pokemon4 = Time.belongsTo(Pokemon, { as: 'Pokemon4' });
 Time.Pokemon5 = Time.belongsTo(Pokemon, { as: 'Pokemon5' });
 Time.Pokemon6 = Time.belongsTo(Pokemon, { as: 'Pokemon6' });
 
+//Time.belongsToMany(Pokemon, { through: 'TimePokemon', as: 'pokemons' });
 
 module.exports = Time;
