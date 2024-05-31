@@ -29,7 +29,6 @@ async function getAllPokemonInfo(baseUrl, limit) {
                 for (const pokemon of pokemonList) {
                     const details = await PokemonDetails(pokemon.url);
 
-                    // Upsert -> se existe -> atualiza se não -> cria
                     await DefinicaoPokemon.upsert({
                         id: details.id,
                         nome: details.name,
@@ -37,13 +36,13 @@ async function getAllPokemonInfo(baseUrl, limit) {
                         tipo2: details.types[1] ?? null
                     }).catch(console.log);
                 }
-                offset += limit; // Atualiza o offset para a próxima página
+                offset += limit;
             } else {
-                hasNextPage = false; // Nenhum Pokémon restante para buscar
+                hasNextPage = false;
             }
         } catch (error) {
             console.error('Erro ao buscar dados dos Pokémon:', error);
-            hasNextPage = false; // Para o loop em caso de erro
+            hasNextPage = false;
         }
     }
 }

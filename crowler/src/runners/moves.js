@@ -31,16 +31,16 @@ async function getAllMovesInfo(baseUrl, limit) {
             if (moveList.length > 0) {
                 for (const move of moveList) {
                     const details = await MovesDetails(move.url);
-                    // Upsert -> se existe -> atualiza se não -> cria
+
                     await Moves.upsert(details).catch(console.log);
                 }
-                offset += limit; // Atualiza o offset para a próxima página
+                offset += limit; 
             } else {
-                hasNextPage = false; // Nenhum Pokémon restante para buscar
+                hasNextPage = false; 
             }
         } catch (error) {
             console.error('Erro ao buscar dados dos Moves:', error);
-            hasNextPage = false; // Para o loop em caso de erro
+            hasNextPage = false; 
         }
     }
 }
