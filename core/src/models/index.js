@@ -14,3 +14,7 @@ module.exports = {
 
 Pokemon.Moves = Pokemon.belongsToMany(Moves, { through: 'PokemonMoves'});
 Moves.Pokemon = Moves.belongsToMany(Pokemon, { through: 'PokemonMoves' });
+Time.Pokemon = Time.belongsToMany(Pokemon, { through: 'TimePokemon'});
+Pokemon.Time = Pokemon.belongsToMany(Time, { through: 'TimePokemon'});
+
+

@@ -4,7 +4,7 @@ const { Time, Pokemon } = require('../models');
 
 router.get('/', async (req, res) => {
     try {
-        const times = await Time.findAll({include: ["Pokemon1", "Pokemon2", "Pokemon3", "Pokemon4", "Pokemon5", "Pokemon6"]});
+        const times = await Time.findAll({include: [Pokemon]});
 
         res.json(times);       
     } catch (error) {
@@ -39,15 +39,10 @@ router.post('/', async (req, res) => {
 
         const newTimeData = {
             nomeDoTime,
-            Pokemon1Id: pokemons[0]?.id,
-            Pokemon2Id: pokemons[1]?.id,
-            Pokemon3Id: pokemons[2]?.id,
-            Pokemon4Id: pokemons[3]?.id,
-            Pokemon5Id: pokemons[4]?.id,
-            Pokemon6Id: pokemons[5]?.id
         };
 
-        const newTime = await Time.create(newTimeData);
+        const newTime = await Time.create(newTimeData)
+        pokemons.forEach(async poke => await newTime.addPokemon(poke, { through: { selfGranted: false } }))
         res.status(201).json(newTime);
     } catch (error) {
         console.log(error.message);
@@ -57,7 +52,7 @@ router.post('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const time = await Time.findByPk(req.params.id);
+        const time = await Time.findByPk(req.params.id, { include: [Pokemon] });
         if (time) {
             res.json(time);
         } else {
@@ -66,25 +61,6 @@ router.get('/:id', async (req, res) => {
     } catch (error) {
         console.log(error.message)
         res.status(500).json({ error: 'Erro ao buscar o time.' });
-    }
-});
-
-router.get('/:id/pokemon', async (req, res) => {
-    try {
-        const time = await Time.findByPk(req.params.id);
-        if (time) {
-            const pokemons = await Pokemon.findAll({
-                where: {
-                    id: [time.pokemon1, time.pokemon2, time.pokemon3, time.pokemon4, time.pokemon5, time.pokemon6]
-                }
-            });
-            res.json(pokemons);
-        } else {
-            res.status(404).json({ error: 'Time não encontrado.' });
-        }
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).json({ error: 'Erro ao buscar os Pokémons do time.' });
     }
 });
 
