@@ -9,7 +9,7 @@ const Moves = sequelize.define('Moves', {
     },
     nome: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     precisao: {
         type: DataTypes.INTEGER,
@@ -32,5 +32,6 @@ const Moves = sequelize.define('Moves', {
     tableName: 'moves',
     timestamps: false
 });
+
 
 module.exports = Moves;

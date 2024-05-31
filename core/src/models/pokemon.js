@@ -23,6 +23,5 @@ const Pokemon = sequelize.define('Pokemon', {
 });
 
 Pokemon.DefinicaoPokemon = Pokemon.belongsTo(DefinicaoPokemon);
-Pokemon.Moves = Pokemon.belongsToMany(Moves, { through: 'PokemonMoves', as: 'moves' });  //mudança
 
 module.exports = Pokemon;

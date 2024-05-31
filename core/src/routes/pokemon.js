@@ -5,7 +5,7 @@ const { Pokemon, DefinicaoPokemon, Moves } = require('../models');
 // Rota para buscar todos os Pokémons
 router.get('/', async (req, res) => {
     try {
-        const pokemons = await Pokemon.findAll({include: DefinicaoPokemon});
+        const pokemons = await Pokemon.findAll({include: [DefinicaoPokemon, Moves]});
         res.json(pokemons);
     } catch (error) {
         console.log(error.message)
@@ -21,24 +21,46 @@ router.post('/', async (req, res) => {
             ...pokemonData
         } = req.body
 
-        const pokemon_defition = await DefinicaoPokemon.findOne({ where: { nome: pokemon } })
-        if (!pokemon_defition) {
+        const requestedMoves = moves ?? [];
+
+        if (requestedMoves.length > 4) {
+            return res.status(400).json({ error: "Pokemon pode ter apenas quatro moves" });
+        }
+
+        const movesList = await Promise.all(
+            requestedMoves.map(id => Moves.findOne({ where: { nome: id }}))
+        );
+
+        const pokemon_definition = await DefinicaoPokemon.findOne({ where: { nome: pokemon } })
+        if (!pokemon_definition) {
             res.status(404).json({ error: `Erro ao criar pokemon. ${pokemon} não é um pokemon válido`})
             return 
         }
-        const newPokemonData = {DefinicaoPokemonId: pokemon_defition.id, ...pokemonData }
-        const newPokemon = await Pokemon.create(newPokemonData, {association: Pokemon.DefinicaoPokemon, include: [Pokemon.DefinicaoPokemon]});
-        res.status(201).json(newPokemon);
+        const newPokemonData = {
+            DefinicaoPokemonId: pokemon_definition.id, 
+            ...pokemonData
+        }
+
+        const newPokemon = await Pokemon.create(newPokemonData);
+        movesList.forEach(async move => await newPokemon.addMoves(move, { through: { selfGranted: false } }))
+
+        const showModel = {
+            ...newPokemon.dataValues,
+            "DefinicaoPokemon": pokemon_definition.dataValues,
+            "Moves": movesList.dataValues
+        }
+
+        res.status(201).json(showModel);
     } catch (error) {
         console.log(error.message)
-        res.status(500).json({ error: 'Erro ao criar o Pokémon.'});
+        res.status(500).json({ "error": `Erro ao criar o Pokémon. ${error}`});
     }
 });
 
 // Rota para buscar um Pokémon por ID
 router.get('/:id', async (req, res) => {
     try {
-        const pokemon = await Pokemon.findByPk(req.params.id);
+        const pokemon = await Pokemon.findByPk(req.params.id, {include: DefinicaoPokemon});
         if (pokemon) {
             res.json(pokemon);
         } else {
