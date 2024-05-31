@@ -11,8 +11,6 @@ app.use('/api/pokemon', pokemonRoutes);
 
 beforeAll(async () => {
     await sequelize.sync({ force: true });
-    await DefinicaoPokemon.create({ nome: 'Pikachu', tipo1: 'Electric' });
-    await Moves.create({ move1: 'Thunderbolt' });
 });
 
 afterAll(async () => {
