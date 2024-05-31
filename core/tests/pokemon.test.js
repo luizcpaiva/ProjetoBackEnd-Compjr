@@ -1,5 +1,4 @@
 // tests/pokemon.test.js
-
 const request = require('supertest');
 const express = require('express');
 const { sequelize, Pokemon, DefinicaoPokemon, Moves } = require('../src/models');
@@ -11,6 +10,16 @@ app.use('/api/pokemon', pokemonRoutes);
 
 beforeAll(async () => {
     await sequelize.sync({ force: true });
+
+    await DefinicaoPokemon.bulkCreate([
+        { nome: 'raikou', tipo1: 'Electric', tipo2: null },
+    ]);
+
+    await Moves.bulkCreate([
+        { nome: 'pound', precisao: 100, pp: 35, prioridade: 0, poder: 40 },
+        { nome: 'cut', precisao: 95, pp: 30, prioridade: 0, poder: 50 },
+        { nome: 'thunder', precisao: 70, pp: 10, prioridade: 0, poder: 110 },
+    ]);
 });
 
 afterAll(async () => {
@@ -22,14 +31,13 @@ describe('Pokemon API', () => {
         const response = await request(app)
             .post('/api/pokemon')
             .send({
-                pokemon: 'Pikachu',
-                sexo: 'M',
-                shiny: false,
-                altura: 0.4,
-                ivs: [31, 31, 31, 31, 31, 31],
-                evs: [85, 85, 85, 85, 85, 85],
-                apelido: 'Sparky',
-                nivel: 5
+                "pokemon": "raikou",
+                "sexo": "M",
+                "shiny": false,
+                "altura": 0.4,
+                "apelido": "Xumbreguinha",
+                "nivel": 5,
+                "moves": ["pound", "cut"]
             });
         expect(response.statusCode).toBe(201);
         expect(response.body).toHaveProperty('id');
@@ -50,9 +58,12 @@ describe('Pokemon API', () => {
     it('should update a Pokemon by ID', async () => {
         const response = await request(app)
             .patch('/api/pokemon/1')
-            .send({ apelido: 'Thunder' });
+            .send({
+                apelido: 'Carlos',
+                moves: ["thunder", "pound", "cut"]
+            });
         expect(response.statusCode).toBe(200);
-        expect(response.body).toHaveProperty('apelido', 'Thunder');
+        expect(response.body).toHaveProperty('apelido', 'Carlos');
     });
 
     it('should delete a Pokemon by ID', async () => {
