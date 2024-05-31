@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Time, Pokemon } = require('../models');
+const { Time, Pokemon, TimePokemon } = require('../models');
 
 router.get('/', async (req, res) => {
     try {
@@ -66,13 +66,34 @@ router.get('/:id', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     try {
+
+        const {
+            nomeDoTime,
+            pokemon
+        } = req.body
+
+        const pokemonList = pokemon ?? []
+
+        const updatedFields = {nomeDoTime}
+
         const time = await Time.findByPk(req.params.id);
-        if (time) {
-            await time.update(req.body);
-            res.json(time);
-        } else {
+        if (!time) {
             res.status(404).json({ error: 'Time não encontrado.' });
         }
+        if (pokemon){
+            await TimePokemon.destroy({where: {
+                "TimeId": time.id
+            }})
+
+            const pokemons = await Promise.all(
+                pokemonList.map(id => Pokemon.findOne({ where: { id }}))
+            );
+
+            pokemons.forEach(async poke => await time.addPokemon(poke, { through: { selfGranted: false } }))
+        }
+        await time.update(updatedFields);
+        res.json(time);
+
     } catch (error) {
         console.log(error.message)
         res.status(500).json({ error: 'Erro ao atualizar o time.' });
