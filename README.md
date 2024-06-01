@@ -1,4 +1,4 @@
-# Pokemon manager api
+# Pokemon Manager API
 
 Esta aplicação foi desenvolvida como avaliação para a Empresa Jr da Universidade Federal de Lavras Comp Jr.
 
@@ -41,7 +41,7 @@ Para utilizar os testes automatizados, utilize o comando:
 
 ```npm test```
 
-Esse comando irá realizar todos os testes predefinidos do código. Vale atentar que executar os testes irá apagar todos os demais dados do banco de dados.
+Utilize na pasta core. Esse comando irá realizar todos os testes predefinidos do código. Vale atentar que executar os testes irá apagar todos os demais dados do banco de dados.
 
 ## Postgres
 
