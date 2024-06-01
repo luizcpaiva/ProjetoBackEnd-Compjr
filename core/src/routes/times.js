@@ -2,6 +2,29 @@ const express = require('express');
 const router = express.Router();
 const { Time, Pokemon, TimePokemon } = require('../models');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Times
+ *   description: API para gerenciar Times de Pokemons
+ */
+
+/**
+ * @swagger
+ * /api/times:
+ *   get:
+ *     summary: Recupera a lista de Times
+ *     tags: [Times]
+ *     responses:
+ *       200:
+ *         description: A lista de Times
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: './models/times.js'
+ */
 router.get('/', async (req, res) => {
     try {
         const times = await Time.findAll({include: [Pokemon]});
@@ -13,6 +36,35 @@ router.get('/', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/times:
+ *   post:
+ *     summary: Cria um novo Time
+ *     tags: [Times]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               descricao:
+ *                 type: string
+ *               pokemons:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *     responses:
+ *       201:
+ *         description: O Time criado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: './models/times.js'
+ */
 router.post('/', async (req, res) => {
     try {
         const {
@@ -50,6 +102,30 @@ router.post('/', async (req, res) => {
     }
 });
 
+
+/**
+ * @swagger
+ * /api/times/{id}:
+ *   get:
+ *     summary: Recupera um Time pelo ID
+ *     tags: [Times]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: O ID do Time
+ *     responses:
+ *       200:
+ *         description: O Time encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: './models/times.js'
+ *       404:
+ *         description: Time não encontrado
+ */
 router.get('/:id', async (req, res) => {
     try {
         const time = await Time.findByPk(req.params.id, { include: [Pokemon] });
@@ -64,6 +140,44 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/times/{id}:
+ *   patch:
+ *     summary: Atualiza um Time pelo ID
+ *     tags: [Times]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: O ID do Time
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               descricao:
+ *                 type: string
+ *               pokemons:
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *     responses:
+ *       200:
+ *         description: O Time atualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: './models/times.js'
+ *       404:
+ *         description: Time não encontrado
+ */
 router.patch('/:id', async (req, res) => {
     try {
 
@@ -100,6 +214,25 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/times/{id}:
+ *   delete:
+ *     summary: Exclui um Time pelo ID
+ *     tags: [Times]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: O ID do Time
+ *     responses:
+ *       204:
+ *         description: Time excluído com sucesso
+ *       404:
+ *         description: Time não encontrado
+ */
 router.delete('/:id', async (req, res) => {
     try {
         const time = await Time.findByPk(req.params.id);

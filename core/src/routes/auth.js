@@ -8,16 +8,44 @@ require('dotenv').config();
 const router = express.Router();
 const secret = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
-// Configuração do Nodemailer
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // ou qualquer serviço de email que você estiver usando
+    service: 'gmail', 
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     }
 });
 
-// Registro de usuário
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: API para autenticação
+ */
+
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Registra um novo usuário
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Usuário registrado com sucesso
+ *       400:
+ *         description: Erro na validação dos dados
+ */
 router.post('/register', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -29,7 +57,36 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Login de usuário
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Realiza login do usuário
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login realizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       400:
+ *         description: Usuário ou senha incorretos
+ */
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -47,7 +104,7 @@ router.post('/login', async (req, res) => {
 
 // Rota protegida
 router.get('/protected', authenticateToken, (req, res) => {
-    if (req.user.role === 'admin') {
+    if (req.user.role === 'user') {
         res.json({ message: 'Acesso autorizado para administrador.' });
     } else {
         res.json({ message: 'Acesso autorizado.' });

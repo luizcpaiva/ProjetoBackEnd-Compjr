@@ -2,6 +2,29 @@ const express = require('express');
 const router = express.Router();
 const { Pokemon, DefinicaoPokemon, Moves, PokemonMoves } = require('../models');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Pokemon
+ *   description: API para gerenciar Pokemons
+ */
+
+/**
+ * @swagger
+ * /api/pokemon:
+ *   get:
+ *     summary: Recupera a lista de Pokemons
+ *     tags: [Pokemon]
+ *     responses:
+ *       200:
+ *         description: A lista de Pokemons
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: './models/pokemon.js'
+ */
 router.get('/', async (req, res) => {
     try {
         const pokemons = await Pokemon.findAll({include: [DefinicaoPokemon, Moves]});
@@ -12,6 +35,47 @@ router.get('/', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/pokemon:
+ *   post:
+ *     summary: Cria um novo Pokemon
+ *     tags: [Pokemon]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pokemon:
+ *                 type: string
+ *               moves:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               sexo:
+ *                 type: string
+ *               shiny:
+ *                 type: boolean
+ *               altura:
+ *                 type: number
+ *               ivs:
+ *                 type: integer
+ *               evs:
+ *                 type: integer
+ *               apelido:
+ *                 type: string
+ *               nivel:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: O Pokemon criado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: './models/pokemon.js'
+ */
 router.post('/', async (req, res) => {
     try {
         const {
@@ -56,6 +120,30 @@ router.post('/', async (req, res) => {
     }
 });
 
+
+/**
+ * @swagger
+ * /api/pokemon/{id}:
+ *   get:
+ *     summary: Recupera um Pokemon pelo ID
+ *     tags: [Pokemon]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: O ID do Pokemon
+ *     responses:
+ *       200:
+ *         description: O Pokemon encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: './models/pokemon.js'
+ *       404:
+ *         description: Pokemon não encontrado
+ */
 router.get('/:id', async (req, res) => {
     try {
         const pokemon = await Pokemon.findByPk(req.params.id, {include: DefinicaoPokemon, Moves});
@@ -70,6 +158,48 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/pokemon/{id}:
+ *   patch:
+ *     summary: Atualiza um Pokemon pelo ID
+ *     tags: [Pokemon]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: O ID do Pokemon
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               evs:
+ *                 type: integer
+ *               apelido:
+ *                 type: string
+ *               nivel:
+ *                 type: integer
+ *               altura:
+ *                 type: number
+ *               moves:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: O Pokemon atualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: './models/pokemon.js'
+ *       404:
+ *         description: Pokemon não encontrado
+ */
 router.patch('/:id', async (req, res) => {
     try {
         const {
@@ -108,6 +238,25 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/pokemon/{id}:
+ *   delete:
+ *     summary: Exclui um Pokemon pelo ID
+ *     tags: [Pokemon]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: O ID do Pokemon
+ *     responses:
+ *       204:
+ *         description: Pokemon excluído com sucesso
+ *       404:
+ *         description: Pokemon não encontrado
+ */
 router.delete('/:id', async (req, res) => {
     try {
         const pokemon = await Pokemon.findByPk(req.params.id);
