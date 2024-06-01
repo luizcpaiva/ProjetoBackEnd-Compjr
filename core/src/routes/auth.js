@@ -9,7 +9,9 @@ const router = express.Router();
 const secret = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail', 
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -53,6 +55,7 @@ router.post('/register', async (req, res) => {
         const user = await User.create({ email, password: hashedPassword });
         res.status(201).json(user);
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Erro ao registrar usuário.' });
     }
 });
@@ -98,6 +101,7 @@ router.post('/login', async (req, res) => {
             res.status(401).json({ error: 'Credenciais inválidas.' });
         }
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Erro ao fazer login.' });
     }
 });
@@ -137,7 +141,7 @@ router.post('/forgot-password', async (req, res) => {
         user.resetTokenExpiration = Date.now() + 3600000; // 1 hora
         await user.save();
 
-        const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+        const resetUrl = `http://localhost:3000/api/auth/reset-password/${resetToken}`;
         await transporter.sendMail({
             to: email,
             from: process.env.EMAIL_USER,
@@ -148,7 +152,8 @@ router.post('/forgot-password', async (req, res) => {
 
         res.json({ message: 'E-mail de redefinição de senha enviado.' });
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao solicitar redefinição de senha.' });
+        console.log(error)
+        res.status(500).json({ error: 'Erro ao solicitar redefinição de senha.'});
     }
 });
 
@@ -173,6 +178,7 @@ router.post('/reset-password/:token', async (req, res) => {
 
         res.json({ message: 'Senha redefinida com sucesso.' });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Erro ao redefinir senha.' });
     }
 });

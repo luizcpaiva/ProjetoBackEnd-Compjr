@@ -116,7 +116,7 @@ router.post('/', async (req, res) => {
         res.status(201).json(showModel);
     } catch (error) {
         console.log(error.message)
-        res.status(500).json({ "error": `Erro ao criar o Pokémon. ${error}`});
+        res.status(500).json({ "error": `Erro ao criar o Pokémon.`});
     }
 });
 

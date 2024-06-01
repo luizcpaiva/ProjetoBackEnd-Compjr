@@ -71,9 +71,7 @@ router.post('/', async (req, res) => {
             nomeDoTime,
             pokemonList
         } = req.body;
-
-        console.log(pokemonList)
-
+        
         if (pokemonList === undefined || pokemonList.length == 0) {
             return res.status(400).json({error: "Deve fornecer pelo menos um pokemon para o time"})
         }
@@ -186,28 +184,36 @@ router.patch('/:id', async (req, res) => {
             pokemon
         } = req.body
 
-        const pokemonList = pokemon ?? []
+        const pokemonList = [...Set(pokemon ?? [])]
+
+        if (pokemonList.length > 6) {
+            return res.status(400).json({error: "Um time não pode ter mais que seis pokemon"})
+        }
 
         const updatedFields = {nomeDoTime}
 
         const time = await Time.findByPk(req.params.id);
         if (!time) {
-            res.status(404).json({ error: 'Time não encontrado.' });
+            return res.status(404).json({ error: 'Time não encontrado.' });
         }
         if (pokemon){
             await TimePokemon.destroy({where: {
                 "TimeId": time.id
             }})
 
+
             const pokemons = await Promise.all(
                 pokemonList.map(id => Pokemon.findOne({ where: { id }}))
             );
 
+            if (pokemon.some(poke => poke == undefined)) {
+                return res.status(400).json({error: "Um ou mais pokemon não encontrado"})
+            }
+
             pokemons.forEach(async poke => await time.addPokemon(poke, { through: { selfGranted: false } }))
         }
         await time.update(updatedFields);
-        res.json(time);
-
+        res.status(200).json(time);
     } catch (error) {
         console.log(error.message)
         res.status(500).json({ error: 'Erro ao atualizar o time.' });

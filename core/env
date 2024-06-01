@@ -1,0 +1,6 @@
+DB_USER=luizcpaiva
+DB_PASS=1234
+DB_NAME=bancoPokemon
+PORT=3000
+EMAIL_USER=apipokemon501@gmail.com
+EMAIL_PASS=Gabriela290404@
