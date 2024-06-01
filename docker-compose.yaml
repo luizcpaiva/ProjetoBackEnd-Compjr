@@ -9,14 +9,41 @@ services:
     env_file: ./.env
     volumes:
       - ./local/pgdata:/var/lib/postgresql/data
+    networks:
+      - poke-manager
 
-  crowler:
-    container_name: pokemon_crowler
+  crawler:
+    container_name: pokemon_crawler
     image: node
     volumes:
-      - ./crowler:/project
+      - ./core:/core
+      - ./crawler:/project
     depends_on:
       - database
     working_dir: /project
-    entrypoint: npm run prod
+    env_file: ./.env
+    entrypoint: npm run app
+    environment: 
+      - POSTGRES_HOST=database
+    networks:
+      - poke-manager
   
+  core:
+    container_name: pokemon_core
+    image: node
+    ports:
+      - 3000:3000
+    volumes:
+      - ./core:/project
+    depends_on:
+      - database
+    working_dir: /project
+    env_file: ./.env
+    entrypoint: npm run app
+    environment: 
+      - POSTGRES_HOST=database
+    networks:
+      - poke-manager
+
+networks:
+  poke-manager:
