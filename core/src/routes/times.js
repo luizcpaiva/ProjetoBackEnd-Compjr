@@ -184,8 +184,8 @@ router.patch('/:id', async (req, res) => {
             pokemon
         } = req.body
 
-        const pokemonList = [...Set(pokemon ?? [])]
-
+        const pokemonList = [... new Set(pokemon ?? [])]
+        
         if (pokemonList.length > 6) {
             return res.status(400).json({error: "Um time não pode ter mais que seis pokemon"})
         }
